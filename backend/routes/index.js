@@ -4,12 +4,26 @@ var router = express.Router();
 const users = require("../initialUsers.js");
 
 router.get("/users", function (req, res) {
+  console.log("Fetching users for page:", req.query.page); // Log the page number
+
+  // Get the page number from the query params, default to 1 if not provided
+  const page = parseInt(req.query.page) || 1;
+  const limit = 20; // Entries per page
+  const startIndex = (page - 1) * limit;
+  const endIndex = page * limit;
+
+  // Paginate users array
+  const paginatedUsers = users.slice(startIndex, endIndex).map((user) => ({
+    id: user.id,
+    firstName: user.firstName,
+    lastName: user.lastName,
+  }));
+
   res.json({
-    users: users.map((user) => ({
-      id: user.id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-    })),
+    users: page,
+    totalPages: Math.ceil(users.length / limit),
+    totalUsers: users.length,
+    users: paginatedUsers,
   });
 });
 
@@ -33,7 +47,7 @@ router.post("/users", async (req, res) => {
 });
 
 // Get a single user by ID
-app.get("/users/:id", async (req, res) => {
+router.get("/users/:id", async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     if (!user) return res.status(404).json({ message: "User not found" });
@@ -44,7 +58,7 @@ app.get("/users/:id", async (req, res) => {
 });
 
 // Update a user by ID
-app.put("/users/:id", async (req, res) => {
+router.put("/users/:id", async (req, res) => {
   const userIndex = users.findIndex((user) => user.id === req.params.id);
   if (userIndex === -1)
     return res.status(404).json({ message: "User not found" });
@@ -53,7 +67,7 @@ app.put("/users/:id", async (req, res) => {
 });
 
 // Delete a user by ID
-app.delete("/users/:id", async (req, res) => {
+router.delete("/users/:id", async (req, res) => {
   const userIndex = users.findIndex((user) => user.id === req.params.id);
   if (userIndex === -1)
     return res.status(404).json({ message: "User not found" });

@@ -29,7 +29,7 @@ export const EditContactModal = ({
   });
   const { data: contact, isPending: isContactPending } =
     useContactDetails(editContactId);
-  const { mutate, isPending, error, reset } = useEditContact(() => close());
+  const { mutate, isPending, error, reset } = useEditContact(editContactId,() => close());
   useEffect(() => {
     if (contact) {
       reset();

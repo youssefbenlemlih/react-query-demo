@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useMutationState, useQuery, useQueryClient, } from "@tanstack/react-query";
 import { client, Contact, CreateContactRequest, GetContactsResponse } from "./client";
 
 export const useContacts = <T = GetContactsResponse>(
@@ -31,9 +31,10 @@ export const useCreateContact = (onSuccess?: () => void) => {
     },
   });
 };
-export const useEditContact = (onSuccess?: () => void) => {
+export const useEditContact = (contactId:string|undefined,onSuccess?: () => void) => {
   const queryClient = useQueryClient();
   return useMutation({
+    mutationKey:["edit-contact", contactId],
     mutationFn: (contact: Contact) => client.editContact(contact),
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -43,6 +44,20 @@ export const useEditContact = (onSuccess?: () => void) => {
     },
   });
 };
+export const useOptimisticContactName = (contactId: string) => {
+ const mutations = useMutationState({
+    filters:{mutationKey:["edit-contact", contactId], status:"pending"}
+  })
+  const firstMutation = mutations[0]
+  if (firstMutation) {
+    {
+    const contact =  (firstMutation.variables as Contact)
+    return contact.firstName +" "+contact.lastName
+    }
+  }
+  return undefined
+}
+
 export const useNumberCountryCode = (phoneNumber: string | undefined) =>
   useQuery({
     queryKey: ["number-details", phoneNumber],

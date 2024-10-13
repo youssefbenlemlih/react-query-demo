@@ -7,7 +7,8 @@ import {
   TextInput,
 } from "@mantine/core";
 import { IconHome, IconPhone } from "@tabler/icons-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useCreateContact } from "../api/hooks";
 
 type CreateNewContactModalProps = {
   isOpen: boolean;
@@ -24,6 +25,19 @@ export const CreateNewContactModal = ({
     phoneNumber: "",
     address: "",
   });
+  useEffect(() => {
+    if (isOpen)
+      setFormState({
+        firstName: "",
+        lastName: "",
+        phoneNumber: "",
+        address: "",
+      });
+  }, [isOpen]);
+  const { mutate, isPending } = useCreateContact(() => close());
+  const onSaveClick = () => {
+    mutate({ ...formState });
+  };
   return (
     <Modal opened={isOpen} onClose={close} title="Create New Contact">
       <Stack>
@@ -37,9 +51,9 @@ export const CreateNewContactModal = ({
             }
           />
           <TextInput
-            value={formState.firstName}
+            value={formState.lastName}
             label="Last name"
-            placeholder="Enter first name"
+            placeholder="Enter last name"
             onChange={(e) =>
               setFormState({ ...formState, lastName: e.target.value })
             }
@@ -58,7 +72,7 @@ export const CreateNewContactModal = ({
           value={formState.address}
           leftSection={<IconHome size={14} />}
           label="Address"
-          placeholder="Enter first name"
+          placeholder="Enter Adress"
           onChange={(e) =>
             setFormState({ ...formState, address: e.target.value })
           }
@@ -71,7 +85,9 @@ export const CreateNewContactModal = ({
           >
             Cancel
           </Button>
-          <Button>Create</Button>
+          <Button loading={isPending} onClick={onSaveClick}>
+            Create
+          </Button>
         </Flex>
       </Stack>
     </Modal>

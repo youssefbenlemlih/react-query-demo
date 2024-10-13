@@ -4,8 +4,8 @@ var cors = require("cors");
 var app = express();
 
 var corsOptions = {
-  origin: "http://localhost:5173",
-  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+  origin: "*",
+  optionsSuccessStatus: 200,
 };
 var indexRouter = require("./routes/index");
 
@@ -25,25 +25,10 @@ app.use("/", indexRouter);
 
 var http = require("http");
 
-var port = normalizePort(process.env.PORT || "3000");
+var port = (process.env.PORT || "3000");
 app.set("port", port);
 var server = http.createServer(app);
 
 server.listen(port);
 
-function normalizePort(val) {
-  var port = parseInt(val, 10);
-
-  if (isNaN(port)) {
-    // named pipe
-    return val;
-  }
-
-  if (port >= 0) {
-    // port number
-    return port;
-  }
-
-  return false;
-}
 module.exports = app;

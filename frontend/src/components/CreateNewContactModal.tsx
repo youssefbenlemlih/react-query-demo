@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   Flex,
   Modal,
@@ -25,16 +26,18 @@ export const CreateNewContactModal = ({
     phoneNumber: "",
     address: "",
   });
+  const { mutate, isPending, error, reset } = useCreateContact(() => close());
   useEffect(() => {
-    if (isOpen)
+    if (isOpen) {
+      reset();
       setFormState({
         firstName: "",
         lastName: "",
         phoneNumber: "",
         address: "",
       });
+    }
   }, [isOpen]);
-  const { mutate, isPending } = useCreateContact(() => close());
   const onSaveClick = () => {
     mutate({ ...formState });
   };
@@ -43,6 +46,7 @@ export const CreateNewContactModal = ({
       <Stack>
         <SimpleGrid cols={2}>
           <TextInput
+            withAsterisk
             value={formState.firstName}
             label="First name"
             placeholder="Enter first name"
@@ -51,6 +55,7 @@ export const CreateNewContactModal = ({
             }
           />
           <TextInput
+            withAsterisk
             value={formState.lastName}
             label="Last name"
             placeholder="Enter last name"
@@ -60,6 +65,7 @@ export const CreateNewContactModal = ({
           />
         </SimpleGrid>
         <TextInput
+          withAsterisk
           value={formState.phoneNumber}
           leftSection={<IconPhone size={14} />}
           label="Phone number"
@@ -77,6 +83,11 @@ export const CreateNewContactModal = ({
             setFormState({ ...formState, address: e.target.value })
           }
         />
+        {error && (
+          <Alert variant="light" color="red" title="Error creating contact">
+            {error.message}
+          </Alert>
+        )}
         <Flex gap="sm" mx="auto">
           <Button
             onClick={() => close()}

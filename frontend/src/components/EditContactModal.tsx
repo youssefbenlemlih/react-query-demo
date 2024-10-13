@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   Flex,
   Modal,
@@ -28,8 +29,13 @@ export const EditContactModal = ({
   });
   const { data: contact, isPending: isContactPending } =
     useContactDetails(editContactId);
-  useEffect(() => contact && setFormState(contact), [contact]);
-  const { mutate, isPending } = useEditContact(() => close());
+  const { mutate, isPending, error, reset } = useEditContact(() => close());
+  useEffect(() => {
+    if (contact) {
+      reset();
+      setFormState(contact);
+    }
+  }, [contact]);
   const onSaveClick = () => {
     mutate({ ...formState, id: editContactId! });
   };
@@ -38,9 +44,10 @@ export const EditContactModal = ({
       {isContactPending ? (
         <Spinner />
       ) : (
-        <Stack>
+        <Stack mb="md">
           <SimpleGrid cols={2}>
             <TextInput
+              withAsterisk
               value={formState.firstName}
               label="First name"
               placeholder="Enter first name"
@@ -49,6 +56,7 @@ export const EditContactModal = ({
               }
             />
             <TextInput
+              withAsterisk
               value={formState.lastName}
               label="Last name"
               placeholder="Enter last name"
@@ -58,6 +66,7 @@ export const EditContactModal = ({
             />
           </SimpleGrid>
           <TextInput
+            withAsterisk
             value={formState.phoneNumber}
             leftSection={<IconPhone size={14} />}
             label="Phone number"
@@ -76,6 +85,11 @@ export const EditContactModal = ({
             }
           />
         </Stack>
+      )}
+      {error && (
+        <Alert variant="light" color="red" title="Error creating contact">
+          {error.message}
+        </Alert>
       )}
       <Flex gap="sm" justify={"end"} mt="sm">
         <Button

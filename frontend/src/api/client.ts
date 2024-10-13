@@ -35,11 +35,17 @@ const backenUrl = "http://localhost:3000";
 export const client = {
   async getContacts(page: number) {
     const res = await fetch(`${backenUrl}/contacts?page=${page}`);
+    if (!res.ok) {
+      throw new Error(res.statusText);
+    }
     const json = await res.json();
     return json as GetContactsResponse;
   },
   async getContact(contactId: string) {
     const res = await fetch(`${backenUrl}/contacts/${contactId}`);
+    if (!res.ok) {
+      throw new Error(res.statusText);
+    }
     const json = await res.json();
     return json as Contact;
   },
@@ -52,6 +58,10 @@ export const client = {
       },
       body: JSON.stringify(contact),
     });
+    if (!res.ok) {
+      const errorResponse = await res.json();
+      throw new Error(errorResponse.errors?.[0]?.msg || "Unknown error");
+    }
     const json = await res.json();
     return json as Contact;
   },
@@ -64,6 +74,11 @@ export const client = {
       },
       body: JSON.stringify(contact),
     });
+
+    if (!res.ok) {
+      const errorResponse = await res.json();
+      throw new Error(errorResponse.errors?.[0]?.msg || "Unknown error");
+    }
     const json = await res.json();
     return json as Contact;
   },

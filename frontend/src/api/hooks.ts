@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { client } from "./client";
 
-export const useUsers = (page: number) =>
+export const useContacts = (page: number) =>
   useQuery({
-    queryKey: ["users", { page }],
-    queryFn: () => client.getUsers(page),
+    queryKey: ["contacts", { page }],
+    queryFn: () => client.getContacts(page),
   });

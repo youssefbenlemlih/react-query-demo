@@ -1,8 +1,8 @@
 const { faker } = require("@faker-js/faker");
-const initialUsers = [];
+const initialContacts = [];
 
 for (let index = 0; index < 100; index++) {
-  initialUsers.push({
+  initialContacts.push({
     id: faker.string.uuid(),
     firstName: faker.person.firstName(),
     lastName: faker.person.lastName(),
@@ -10,4 +10,4 @@ for (let index = 0; index < 100; index++) {
     address: faker.location.secondaryAddress(),
   });
 }
-module.exports = initialUsers;
+module.exports = initialContacts;

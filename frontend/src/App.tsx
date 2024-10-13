@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Layout } from "./components/Layout";
-import { UsersTable } from "./components/UsersTable";
+import { ContactsTable } from "./components/ContactsTable";
 import { CreateNewContactModal } from "./components/CreateNewContactModal";
 import { Button } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
@@ -8,7 +8,7 @@ import { IconPlus } from "@tabler/icons-react";
 function App() {
   const [isCreateNewContactModalOpen, setIsCreateNewContactModalOpen] =
     useState(false);
-    const [selectedUserId,setSelectedUserId]=useState<string>()
+  const [selectedContactId, setSelectedContactId] = useState<string>();
   return (
     <Layout
       rightSection={
@@ -21,7 +21,7 @@ function App() {
         </Button>
       }
     >
-      <UsersTable openUserDetailsDialog={setSelectedUserId} />
+      <ContactsTable openContactDetailsDialog={setSelectedContactId} />
       <CreateNewContactModal
         isOpen={isCreateNewContactModalOpen}
         close={() => setIsCreateNewContactModalOpen(false)}

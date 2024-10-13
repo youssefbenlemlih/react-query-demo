@@ -1,10 +1,10 @@
-export type UserOverview = {
+export type ContactOverview = {
   id: string;
   firstName: string;
   lastName: string;
 };
 
-export type User = {
+export type Contact = {
   id: string;
   firstName: string;
   lastName: string;
@@ -12,25 +12,25 @@ export type User = {
   address: string;
 };
 
-export type CreateUserRequest = {
+export type CreateContactRequest = {
   firstName: string;
   lastName: string;
   phoneNumber: string;
   address: string;
 };
 
-export type GetUsersResponse = {
-  users: User[];
+export type GetContactsResponse = {
+  contacts: Contact[];
   totalPages: number;
-  totalUsers: number;
+  totalContacts: number;
 };
 
 const backenUrl = "http://localhost:3000";
 
 export const client = {
-  async getUsers(page: number) {
-    const res = await fetch(`${backenUrl}/users?page=${page}`);
+  async getContacts(page: number) {
+    const res = await fetch(`${backenUrl}/contacts?page=${page}`);
     const json = await res.json();
-    return json as GetUsersResponse;
+    return json as GetContactsResponse;
   },
 };
